@@ -7,6 +7,8 @@ class MoviesController < ApplicationController
   end
 
   def index
+    # puts params
+    # print "\n"
     sort = params[:sort] || session[:sort]
     case sort
     when 'title'
