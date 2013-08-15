@@ -4,9 +4,9 @@ Given /the following movies exist/ do |movies_table|
   movies_table.hashes.each do |movie|
     # each returned element will be a hash whose key is the table header.
     # you should arrange to add that movie to the database here.
-    Movie.create(:title => movie['title'], :release_date => movie['release_date'], :rating => movie['rating'])
+    Movie.create(:title => movie['title'], :release_date => movie['release_date'], :rating => movie['rating'], :director => movie['director'])
   end
-  #flunk "Unimplemented"
+  # puts Movie.all
 end
 
 When /^(?:|I )check the following ratings: (.*)/ do |rating_list|
@@ -38,6 +38,8 @@ end
 
 Then /^(?:|I )should be on (.+)$/ do |page_name|
   current_path = URI.parse(current_url).path
+  # puts current_path
+  # puts path_to(page_name)
   if current_path.respond_to? :should
     current_path.should == path_to(page_name)
   else
@@ -49,15 +51,7 @@ end
 #   on the same page
 
 Then /I should see "(.*)" before "(.*)"/ do |e1, e2|
-  html_body = page.body
-  titles = html_body.scan(%r{<tr>[\D]{1}<td>(.*)</td>})
-  a = []
-  titles.each do |title|
-    title.each do |element|
-      a.push(element)
-    end
-  end
-  assert a.index(e1) < a.index(e2)
+  assert (page.body =~ /#{e1}/) < (page.body =~ /#{e2}/)
 end
 
 # Make it easier to express checking or unchecking several boxes at once
@@ -107,5 +101,9 @@ Then /I should see all of the movies/ do
   rows.size.should == Movie.all.size
 end
 
+Then /the (.*) of "(.*)" should be "(.*)"/ do |field, title, value|
+  path_to('the details page for "'+title+'"')
+  assert (page.body =~ /#{field.capitalize}:[\n]#{value}/) > 0
+end
 
 

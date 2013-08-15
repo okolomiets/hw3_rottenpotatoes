@@ -1,5 +1,19 @@
 class MoviesController < ApplicationController
 
+  def search_tmdb
+    @movies = Movie.find_in_tmdb(params[:search_terms])
+  end
+
+  def search_same_director
+    movie = Movie.find(params[:id])
+    if movie.director.blank?
+      flash[:notice] = "'#{movie.title}' has no director info."
+      redirect_to movies_path
+    else
+      @movies = Movie.find_all_by_director(movie.director)
+    end
+  end
+
   def show
     id = params[:id] # retrieve movie ID from URI route
     @movie = Movie.find(id) # look up movie by unique ID

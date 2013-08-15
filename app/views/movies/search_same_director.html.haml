@@ -1,0 +1,19 @@
+-#  This file is app/views/movies/search_same_director.html.haml
+%h1 Search results
+
+%table#movies
+  %thead
+    %tr
+      %th Movie Title
+      %th Rating
+      %th Release Date
+      %th Director
+  %tbody
+    - @movies.each do |movie|
+      %tr
+        %td= movie.title 
+        %td= movie.rating
+        %td= movie.release_date
+        %td= movie.director
+
+= link_to 'Back to movie list', movies_path
